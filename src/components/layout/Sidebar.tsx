@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -14,8 +13,15 @@ import {
   Wand2,
   Lightbulb,
   ListTodo,
+  PenLine,
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
+import { Textarea } from "@/components/ui/textarea";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -23,10 +29,23 @@ interface SidebarProps {
   setDocumentName: (name: string) => void;
 }
 
+const addTextSchema = z.object({
+  name: z.string().min(1, "Document name is required"),
+  content: z.string().min(1, "Content is required"),
+});
+
 export function Sidebar({ isOpen, setDocumentContent, setDocumentName }: SidebarProps) {
   const { toast } = useToast();
   const [documents, setDocuments] = useState<Array<{ name: string; content: string }>>([]);
   const [activeDocument, setActiveDocument] = useState<number | null>(null);
+
+  const addTextForm = useForm<z.infer<typeof addTextSchema>>({
+    resolver: zodResolver(addTextSchema),
+    defaultValues: {
+      name: "",
+      content: "",
+    },
+  });
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -94,6 +113,25 @@ export function Sidebar({ isOpen, setDocumentContent, setDocumentName }: Sidebar
     reader.readAsText(file);
   };
 
+  const handleAddText = (data: z.infer<typeof addTextSchema>) => {
+    const newDocument = {
+      name: data.name,
+      content: data.content,
+    };
+
+    setDocuments([...documents, newDocument]);
+    setActiveDocument(documents.length);
+    setDocumentContent(data.content);
+    setDocumentName(data.name);
+    
+    toast({
+      title: "Reference added",
+      description: `"${data.name}" has been successfully added and is ready for use`,
+    });
+
+    addTextForm.reset();
+  };
+
   const selectDocument = (index: number) => {
     setActiveDocument(index);
     setDocumentContent(documents[index].content);
@@ -130,17 +168,85 @@ export function Sidebar({ isOpen, setDocumentContent, setDocumentName }: Sidebar
         <div className="p-4">
           <h2 className="text-xl font-bold text-sidebar-foreground mb-6">Documents</h2>
           
-          <div className="mb-6">
+          <div className="mb-4 space-y-3">
             <Button
               variant="secondary"
               className="w-full bg-sidebar-accent text-sidebar-accent-foreground hover:bg-sidebar-accent/80"
               onClick={() => document.getElementById("file-upload")?.click()}
             >
               <Upload className="mr-2 h-4 w-4" />
-              Upload reference document
+              Upload document
             </Button>
-            <p className="text-xs text-sidebar-foreground/70 mt-2">
-              Upload PDF, DOCX, or TXT files (max 5MB) as reference material for generating content
+            
+            <Drawer>
+              <DrawerTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                >
+                  <PenLine className="mr-2 h-4 w-4" />
+                  Add text reference
+                </Button>
+              </DrawerTrigger>
+              <DrawerContent>
+                <DrawerHeader>
+                  <DrawerTitle>Add Reference Text</DrawerTitle>
+                </DrawerHeader>
+                <div className="p-4">
+                  <Form {...addTextForm}>
+                    <form onSubmit={addTextForm.handleSubmit(handleAddText)} className="space-y-4">
+                      <FormField
+                        control={addTextForm.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Document Name</FormLabel>
+                            <FormControl>
+                              <input
+                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                placeholder="Enter a name for this reference"
+                                {...field}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={addTextForm.control}
+                        name="content"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Reference Content</FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                placeholder="Paste or type your reference content here"
+                                className="min-h-[200px]"
+                                {...field}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                      <DrawerFooter className="px-0">
+                        <Button type="submit" onClick={() => {
+                          if (addTextForm.formState.isValid) {
+                            document.querySelector('[data-id="drawer-close-button"]')?.dispatchEvent(
+                              new MouseEvent('click', { bubbles: true })
+                            );
+                          }
+                        }}>
+                          Add Reference
+                        </Button>
+                        <DrawerClose data-id="drawer-close-button" />
+                      </DrawerFooter>
+                    </form>
+                  </Form>
+                </div>
+              </DrawerContent>
+            </Drawer>
+            
+            <p className="text-xs text-sidebar-foreground/70 mt-1">
+              Upload documents or add text to use as references for generating content
             </p>
             <input
               type="file"
@@ -193,9 +299,9 @@ export function Sidebar({ isOpen, setDocumentContent, setDocumentName }: Sidebar
             ) : (
               <div className="text-center py-8">
                 <BookOpen className="mx-auto h-10 w-10 text-sidebar-foreground/30 mb-2" />
-                <p className="text-sm text-sidebar-foreground/70">No reference documents yet</p>
+                <p className="text-sm text-sidebar-foreground/70">No reference materials yet</p>
                 <p className="text-xs text-sidebar-foreground/50 mt-1">
-                  Upload documents to use as references for your content
+                  Upload documents or add text to use as references for your content
                 </p>
               </div>
             )}
