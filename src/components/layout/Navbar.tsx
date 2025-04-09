@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import {
   CircleSlash,
   FileText,
@@ -16,6 +16,7 @@ interface NavbarProps {
   setIsGenerating: (value: boolean) => void;
   content: string;
   documentName: string;
+  documentContent: string; // Add documentContent prop
 }
 
 export function Navbar({
@@ -24,6 +25,7 @@ export function Navbar({
   setIsGenerating,
   content,
   documentName,
+  documentContent, // Add documentContent prop
 }: NavbarProps) {
   const { toast } = useToast();
   const [detectionScore, setDetectionScore] = useState<number | null>(null);
@@ -36,10 +38,10 @@ export function Navbar({
   }, [content]);
 
   const generateContent = () => {
-    if (!content.trim()) {
+    if (!documentContent || !documentContent.trim()) {
       toast({
         title: "No source document",
-        description: "Please upload a document first to generate content",
+        description: "Please upload a document or add text reference first to generate content",
         variant: "destructive",
       });
       return;

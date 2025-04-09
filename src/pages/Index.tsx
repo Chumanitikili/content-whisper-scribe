@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Sidebar } from "../components/layout/Sidebar";
 import { Navbar } from "../components/layout/Navbar";
 import { ContentEditor } from "../components/ContentEditor";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 
 export default function Index() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -115,6 +115,7 @@ Remember that ultimately, behind every click, view, and conversion is a human be
           setIsGenerating={setIsGenerating}
           content={generatedContent}
           documentName={documentName}
+          documentContent={documentContent} // Pass documentContent prop
         />
 
         <main className="flex-1 overflow-hidden p-0">

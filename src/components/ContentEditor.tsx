@@ -18,6 +18,7 @@ import {
   InfoIcon,
   Edit,
   FileInput,
+  Upload,
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -89,16 +90,18 @@ export function ContentEditor({
             </AlertDescription>
           </Alert>
           
-          <div className="flex flex-wrap gap-2 mb-2">
-            {extractedKeywords.map((keyword, index) => (
-              <span
-                key={index}
-                className="px-2 py-1 bg-secondary text-secondary-foreground rounded-full text-xs font-medium"
-              >
-                {keyword}
-              </span>
-            ))}
-          </div>
+          {documentContent && (
+            <div className="flex flex-wrap gap-2 mb-2">
+              {extractedKeywords.map((keyword, index) => (
+                <span
+                  key={index}
+                  className="px-2 py-1 bg-secondary text-secondary-foreground rounded-full text-xs font-medium"
+                >
+                  {keyword}
+                </span>
+              ))}
+            </div>
+          )}
 
           <Card className="flex-1">
             <CardContent className="p-0">
@@ -149,7 +152,7 @@ export function ContentEditor({
             <InfoIcon className="h-4 w-4" />
             <AlertTitle>Reference Material</AlertTitle>
             <AlertDescription>
-              This tab displays the original uploaded documents that will be used as reference for AI content generation. Upload documents from the sidebar to view them here.
+              This tab displays the original uploaded documents or text references that will be used for AI content generation. Use the sidebar to upload documents or add text references.
             </AlertDescription>
           </Alert>
           
@@ -161,10 +164,10 @@ export function ContentEditor({
                 ) : (
                   <div className="flex items-center justify-center h-full">
                     <div className="text-center">
-                      <FileText className="h-10 w-10 mx-auto mb-4 text-muted-foreground/60" />
-                      <h3 className="text-lg font-medium mb-2">No reference material</h3>
+                      <Upload className="h-10 w-10 mx-auto mb-4 text-muted-foreground/60" />
+                      <h3 className="text-lg font-medium mb-2">No reference material yet</h3>
                       <p className="text-muted-foreground">
-                        Upload a document from the sidebar to use as reference for content generation
+                        Upload a document or add text references from the sidebar to use as reference for content generation
                       </p>
                     </div>
                   </div>
