@@ -53,20 +53,44 @@ export function Sidebar({ isOpen, setDocumentContent, setDocumentName }: Sidebar
       return;
     }
 
+    // Create a loading toast
+    toast({
+      title: "Processing document",
+      description: `Parsing "${file.name}"...`,
+    });
+
     const reader = new FileReader();
+    
     reader.onload = (e) => {
-      const content = e.target?.result as string;
-      const newDocument = { name: file.name, content };
-      setDocuments([...documents, newDocument]);
-      setActiveDocument(documents.length);
-      setDocumentContent(content);
-      setDocumentName(file.name);
-      
+      try {
+        const content = e.target?.result as string;
+        const newDocument = { name: file.name, content };
+        setDocuments([...documents, newDocument]);
+        setActiveDocument(documents.length);
+        setDocumentContent(content);
+        setDocumentName(file.name);
+        
+        toast({
+          title: "Document ready",
+          description: `"${file.name}" has been successfully uploaded and is ready for editing`,
+        });
+      } catch (error) {
+        toast({
+          title: "Error processing document",
+          description: "We couldn't read this file. Please try a different file format.",
+          variant: "destructive",
+        });
+      }
+    };
+    
+    reader.onerror = () => {
       toast({
-        title: "Document uploaded",
-        description: `"${file.name}" has been successfully uploaded`,
+        title: "Error reading file",
+        description: "There was an error reading your file. Please try again.",
+        variant: "destructive",
       });
     };
+    
     reader.readAsText(file);
   };
 
@@ -113,8 +137,11 @@ export function Sidebar({ isOpen, setDocumentContent, setDocumentName }: Sidebar
               onClick={() => document.getElementById("file-upload")?.click()}
             >
               <Upload className="mr-2 h-4 w-4" />
-              Upload document
+              Upload reference document
             </Button>
+            <p className="text-xs text-sidebar-foreground/70 mt-2">
+              Upload PDF, DOCX, or TXT files (max 5MB) as reference material for generating content
+            </p>
             <input
               type="file"
               id="file-upload"
@@ -166,9 +193,9 @@ export function Sidebar({ isOpen, setDocumentContent, setDocumentName }: Sidebar
             ) : (
               <div className="text-center py-8">
                 <BookOpen className="mx-auto h-10 w-10 text-sidebar-foreground/30 mb-2" />
-                <p className="text-sm text-sidebar-foreground/70">No documents yet</p>
+                <p className="text-sm text-sidebar-foreground/70">No reference documents yet</p>
                 <p className="text-xs text-sidebar-foreground/50 mt-1">
-                  Upload a document to get started
+                  Upload documents to use as references for your content
                 </p>
               </div>
             )}

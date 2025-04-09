@@ -15,7 +15,11 @@ import {
   Target,
   Lightbulb,
   Sparkles,
+  InfoIcon,
+  Edit,
+  FileInput,
 } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface ContentEditorProps {
   documentContent: string;
@@ -62,12 +66,12 @@ export function ContentEditor({
         <div className="border-b px-4">
           <TabsList className="h-14">
             <TabsTrigger value="editor" className="flex items-center">
-              <Pencil className="h-4 w-4 mr-2" />
-              <span className="hidden sm:inline">Editor</span>
+              <Edit className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">AI Writer</span>
             </TabsTrigger>
             <TabsTrigger value="source" className="flex items-center">
-              <FileText className="h-4 w-4 mr-2" />
-              <span className="hidden sm:inline">Source Document</span>
+              <FileInput className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">Reference Material</span>
             </TabsTrigger>
             <TabsTrigger value="settings" className="flex items-center">
               <Settings className="h-4 w-4 mr-2" />
@@ -77,6 +81,14 @@ export function ContentEditor({
         </div>
 
         <TabsContent value="editor" className="flex-1 flex flex-col p-4 space-y-4 mt-0">
+          <Alert variant="default" className="bg-muted/50 mb-2">
+            <InfoIcon className="h-4 w-4" />
+            <AlertTitle>AI Writer</AlertTitle>
+            <AlertDescription>
+              This is where your AI-generated content appears. You can edit the content directly or generate new content using the reference materials.
+            </AlertDescription>
+          </Alert>
+          
           <div className="flex flex-wrap gap-2 mb-2">
             {extractedKeywords.map((keyword, index) => (
               <span
@@ -133,6 +145,14 @@ export function ContentEditor({
         </TabsContent>
 
         <TabsContent value="source" className="flex-1 p-4 mt-0">
+          <Alert variant="default" className="bg-muted/50 mb-4">
+            <InfoIcon className="h-4 w-4" />
+            <AlertTitle>Reference Material</AlertTitle>
+            <AlertDescription>
+              This tab displays the original uploaded documents that will be used as reference for AI content generation. Upload documents from the sidebar to view them here.
+            </AlertDescription>
+          </Alert>
+          
           <Card className="h-full">
             <CardContent className="p-4 h-full">
               <ScrollArea className="h-full">
@@ -142,9 +162,9 @@ export function ContentEditor({
                   <div className="flex items-center justify-center h-full">
                     <div className="text-center">
                       <FileText className="h-10 w-10 mx-auto mb-4 text-muted-foreground/60" />
-                      <h3 className="text-lg font-medium mb-2">No document uploaded</h3>
+                      <h3 className="text-lg font-medium mb-2">No reference material</h3>
                       <p className="text-muted-foreground">
-                        Upload a document from the sidebar to view its content here
+                        Upload a document from the sidebar to use as reference for content generation
                       </p>
                     </div>
                   </div>
@@ -155,6 +175,14 @@ export function ContentEditor({
         </TabsContent>
 
         <TabsContent value="settings" className="p-4 mt-0">
+          <Alert variant="default" className="bg-muted/50 mb-4">
+            <InfoIcon className="h-4 w-4" />
+            <AlertTitle>Content Settings</AlertTitle>
+            <AlertDescription>
+              Customize how the AI generates content by adjusting these settings. Changes will apply to your next content generation.
+            </AlertDescription>
+          </Alert>
+          
           <div className="grid md:grid-cols-2 gap-6">
             <Card>
               <CardContent className="p-6">
@@ -191,10 +219,11 @@ export function ContentEditor({
                       <select
                         id="length"
                         className="w-full p-2 rounded-md border"
+                        defaultValue="1000"
                       >
                         <option value="500">500 words</option>
                         <option value="750">750 words</option>
-                        <option value="1000" selected>1000 words</option>
+                        <option value="1000">1000 words</option>
                         <option value="1500">1500 words</option>
                         <option value="2000">2000 words</option>
                       </select>
