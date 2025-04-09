@@ -16,7 +16,8 @@ interface NavbarProps {
   setIsGenerating: (value: boolean) => void;
   content: string;
   documentName: string;
-  documentContent: string; // Add documentContent prop
+  documentContent: string;
+  setGeneratedContent: (content: string) => void; // Add this prop
 }
 
 export function Navbar({
@@ -25,7 +26,8 @@ export function Navbar({
   setIsGenerating,
   content,
   documentName,
-  documentContent, // Add documentContent prop
+  documentContent,
+  setGeneratedContent, // Add this prop
 }: NavbarProps) {
   const { toast } = useToast();
   const [detectionScore, setDetectionScore] = useState<number | null>(null);
@@ -48,11 +50,30 @@ export function Navbar({
     }
 
     setIsGenerating(true);
+    
     // In a real implementation, this would call the AI API
     setTimeout(() => {
+      // Sample content for demonstration
+      const sampleContent = `# Generated Content Based on Your Document
+
+## Introduction
+This is AI-generated content based on the document you uploaded.
+
+## Main Points
+- The content is based on your reference material
+- It's formatted with proper headings and sections
+- You can edit this content directly in the editor
+
+## Conclusion
+You can now edit, refine, and export this content as needed.`;
+      
+      // Set the generated content
+      setGeneratedContent(sampleContent);
       setIsGenerating(false);
+      
       // Simulate a random AI detection score between 5-18%
       setDetectionScore(Math.floor(Math.random() * 14) + 5);
+      
       toast({
         title: "Content generated",
         description: "Your content has been successfully created",
