@@ -322,7 +322,7 @@ export function ContentEditor({
                         max={1}
                         step={0.1}
                         className="py-2"
-                        onValueChange={(value) => updateSetting("creativity", value[0])}
+                        onValueChange={(value) => updateSetting("creativity", String(value[0]))}
                       />
                       <div className="flex justify-between text-xs text-muted-foreground">
                         <span>Conservative</span>
@@ -338,7 +338,7 @@ export function ContentEditor({
                         max={1}
                         step={0.1}
                         className="py-2"
-                        onValueChange={(value) => updateSetting("humanize", value[0])}
+                        onValueChange={(value) => updateSetting("humanize", String(value[0]))}
                       />
                       <div className="flex justify-between text-xs text-muted-foreground">
                         <span>Standard</span>
