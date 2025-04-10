@@ -19,6 +19,7 @@ import {
   Edit,
   FileInput,
   Upload,
+  Eye,
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -70,6 +71,10 @@ export function ContentEditor({
               <Edit className="h-4 w-4 mr-2" />
               <span className="hidden sm:inline">AI Writer</span>
             </TabsTrigger>
+            <TabsTrigger value="preview" className="flex items-center">
+              <Eye className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">Preview</span>
+            </TabsTrigger>
             <TabsTrigger value="source" className="flex items-center">
               <FileInput className="h-4 w-4 mr-2" />
               <span className="hidden sm:inline">Reference Material</span>
@@ -86,7 +91,7 @@ export function ContentEditor({
             <InfoIcon className="h-4 w-4" />
             <AlertTitle>AI Writer</AlertTitle>
             <AlertDescription>
-              This is where your AI-generated content appears. You can edit the content directly or generate new content using the reference materials.
+              This is where you can edit your AI-generated content. Make changes directly in the editor below.
             </AlertDescription>
           </Alert>
           
@@ -140,6 +145,42 @@ export function ContentEditor({
                         }}
                       />
                     )}
+                  </ScrollArea>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="preview" className="flex-1 flex flex-col p-4 space-y-4 mt-0">
+          <Alert variant="default" className="bg-muted/50 mb-2">
+            <InfoIcon className="h-4 w-4" />
+            <AlertTitle>Content Preview</AlertTitle>
+            <AlertDescription>
+              This is a preview of your generated content. You can see how it will look without any editing marks.
+            </AlertDescription>
+          </Alert>
+          
+          <Card className="flex-1">
+            <CardContent className="p-0">
+              <div className="relative flex flex-col h-full">
+                <div className="absolute inset-0">
+                  <ScrollArea className="h-full">
+                    <div className="p-6 prose prose-sm md:prose-base lg:prose-lg max-w-none">
+                      {generatedContent ? (
+                        <div dangerouslySetInnerHTML={{ __html: generatedContent.replace(/\n/g, '<br>') }} />
+                      ) : (
+                        <div className="flex items-center justify-center h-full min-h-[200px]">
+                          <div className="text-center">
+                            <Eye className="h-10 w-10 mx-auto mb-4 text-muted-foreground/60" />
+                            <h3 className="text-lg font-medium mb-2">No content to preview</h3>
+                            <p className="text-muted-foreground">
+                              Generate content first to see a preview here
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </ScrollArea>
                 </div>
               </div>
