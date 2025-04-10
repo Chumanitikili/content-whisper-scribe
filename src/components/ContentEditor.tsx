@@ -1,5 +1,4 @@
-
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
@@ -36,6 +35,8 @@ export function ContentEditor({
   isGenerating,
 }: ContentEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
+  const [creativity, setCreativity] = useState(0.7);
+  const [tone, setTone] = useState<'professional' | 'conversational' | 'friendly' | 'authoritative' | 'technical'>('professional');
 
   useEffect(() => {
     if (editorRef.current) {
@@ -208,6 +209,8 @@ export function ContentEditor({
                       <select
                         id="tone"
                         className="w-full p-2 rounded-md border"
+                        value={tone}
+                        onChange={(e) => setTone(e.target.value as any)}
                       >
                         <option value="professional">Professional</option>
                         <option value="conversational">Conversational</option>
@@ -218,25 +221,11 @@ export function ContentEditor({
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="length">Content Length (words)</Label>
-                      <select
-                        id="length"
-                        className="w-full p-2 rounded-md border"
-                        defaultValue="1000"
-                      >
-                        <option value="500">500 words</option>
-                        <option value="750">750 words</option>
-                        <option value="1000">1000 words</option>
-                        <option value="1500">1500 words</option>
-                        <option value="2000">2000 words</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-2">
                       <Label htmlFor="creativity">Creativity</Label>
                       <Slider
                         id="creativity"
-                        defaultValue={[0.7]}
+                        value={[creativity]}
+                        onValueChange={(value) => setCreativity(value[0])}
                         max={1}
                         step={0.1}
                         className="py-2"
@@ -244,21 +233,6 @@ export function ContentEditor({
                       <div className="flex justify-between text-xs text-muted-foreground">
                         <span>Conservative</span>
                         <span>Creative</span>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="humanize">Humanization Level</Label>
-                      <Slider
-                        id="humanize"
-                        defaultValue={[0.8]}
-                        max={1}
-                        step={0.1}
-                        className="py-2"
-                      />
-                      <div className="flex justify-between text-xs text-muted-foreground">
-                        <span>Standard</span>
-                        <span>Maximum</span>
                       </div>
                     </div>
                   </div>

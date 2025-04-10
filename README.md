@@ -1,73 +1,75 @@
-# Welcome to your Lovable project
+# ContentWhisper Scribe
 
-## Project info
+ContentWhisper Scribe is a powerful tool that helps you generate human-like content while avoiding AI detection. It processes your source documents and instructions to create natural, undetectable text that can be exported for various purposes.
 
-**URL**: https://lovable.dev/projects/7637bfba-6b28-408a-b37e-63ccdc5f2b08
+## Features
 
-## How can I edit this code?
+- **Human-like Content Generation**: Creates content that mimics natural human writing patterns
+- **AI Detection Avoidance**: Implements sophisticated techniques to minimize AI detection
+- **Multiple Input Methods**: Accepts both text input and file uploads
+- **Customizable Settings**: Adjust creativity and tone to match your needs
+- **Real-time Detection Scoring**: Provides feedback on how detectable the content is
+- **Easy Export**: Export generated content in various formats
 
-There are several ways of editing your application.
+## Getting Started
 
-**Use Lovable**
+1. **Installation**
+   ```bash
+   npm install
+   ```
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/7637bfba-6b28-408a-b37e-63ccdc5f2b08) and start prompting.
+2. **Development**
+   ```bash
+   npm run dev
+   ```
 
-Changes made via Lovable will be committed automatically to this repo.
+3. **Build**
+   ```bash
+   npm run build
+   ```
 
-**Use your preferred IDE**
+## Usage
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+1. **Upload Source Material**
+   - Click "Upload document" to add a file
+   - Or use "Add text reference" to paste text directly
+   - Supported file formats: PDF, DOCX, TXT
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+2. **Generate Content**
+   - Click "Generate content" to process your source material
+   - The system will create human-like content based on your input
 
-Follow these steps:
+3. **Customize Settings**
+   - Adjust creativity level to control how unique the content is
+   - Select tone (professional, conversational, friendly, etc.)
+   - Monitor AI detection score in real-time
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+4. **Export Content**
+   - Once satisfied, click "Export" to save your content
+   - The content will be saved as a text file
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## How It Works
 
-# Step 3: Install the necessary dependencies.
-npm i
+ContentWhisper Scribe uses advanced text processing techniques to:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+1. Analyze source material for key concepts and patterns
+2. Apply human-like writing patterns and variations
+3. Add natural transitions and filler words
+4. Vary sentence and paragraph structures
+5. Implement context-aware content generation
 
-**Edit a file directly in GitHub**
+## Tips for Best Results
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+1. Provide clear, well-structured source material
+2. Start with a lower creativity setting and adjust as needed
+3. Use the AI detection checker to verify content
+4. Edit the generated content to add personal touches
+5. Combine multiple source materials for more diverse output
 
-**Use GitHub Codespaces**
+## Contributing
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## What technologies are used for this project?
+## License
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/7637bfba-6b28-408a-b37e-63ccdc5f2b08) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes it is!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+This project is licensed under the MIT License - see the LICENSE file for details.

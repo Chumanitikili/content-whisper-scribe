@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -9,6 +8,7 @@ import {
   MenuIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { TextProcessor } from "@/lib/textProcessor";
 
 interface NavbarProps {
   toggleSidebar: () => void;
@@ -17,7 +17,7 @@ interface NavbarProps {
   content: string;
   documentName: string;
   documentContent: string;
-  setGeneratedContent: (content: string) => void; // Add this prop
+  setGeneratedContent: (content: string) => void;
 }
 
 export function Navbar({
@@ -27,10 +27,11 @@ export function Navbar({
   content,
   documentName,
   documentContent,
-  setGeneratedContent, // Add this prop
+  setGeneratedContent,
 }: NavbarProps) {
   const { toast } = useToast();
   const [detectionScore, setDetectionScore] = useState<number | null>(null);
+  const [creativity, setCreativity] = useState(0.7);
 
   useEffect(() => {
     // Reset detection score when content changes
@@ -51,33 +52,35 @@ export function Navbar({
 
     setIsGenerating(true);
     
-    // In a real implementation, this would call the AI API
+    // Simulate content generation with processing delay
     setTimeout(() => {
-      // Sample content for demonstration
-      const sampleContent = `# Generated Content Based on Your Document
-
-## Introduction
-This is AI-generated content based on the document you uploaded.
-
-## Main Points
-- The content is based on your reference material
-- It's formatted with proper headings and sections
-- You can edit this content directly in the editor
-
-## Conclusion
-You can now edit, refine, and export this content as needed.`;
-      
-      // Set the generated content
-      setGeneratedContent(sampleContent);
-      setIsGenerating(false);
-      
-      // Simulate a random AI detection score between 5-18%
-      setDetectionScore(Math.floor(Math.random() * 14) + 5);
-      
-      toast({
-        title: "Content generated",
-        description: "Your content has been successfully created",
-      });
+      try {
+        // Process the document content to make it more human-like
+        const processedContent = TextProcessor.processText(documentContent, {
+          creativity: creativity,
+          tone: 'professional',
+        });
+        
+        // Set the generated content
+        setGeneratedContent(processedContent);
+        
+        // Calculate AI detection score
+        const score = TextProcessor.estimateAIDetectionScore(processedContent);
+        setDetectionScore(score);
+        
+        toast({
+          title: "Content generated",
+          description: "Your content has been successfully created and processed",
+        });
+      } catch (error) {
+        toast({
+          title: "Error generating content",
+          description: "There was an error processing your content. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsGenerating(false);
+      }
     }, 3000);
   };
 
@@ -91,30 +94,22 @@ You can now edit, refine, and export this content as needed.`;
       return;
     }
 
-    // Simulate AI detection check
-    toast({
-      title: "Checking AI detection...",
-      description: "Analyzing content against detection tools",
-    });
-
-    setTimeout(() => {
-      // Simulate a random AI detection score between 5-18%
-      const score = Math.floor(Math.random() * 14) + 5;
-      setDetectionScore(score);
-      
-      if (score < 20) {
-        toast({
-          title: "AI Detection Score: " + score + "%",
-          description: "Your content has a low probability of being flagged as AI-generated",
-        });
-      } else {
-        toast({
-          title: "AI Detection Score: " + score + "%",
-          description: "Your content may be detected as AI-generated. Consider regenerating.",
-          variant: "destructive",
-        });
-      }
-    }, 2000);
+    // Calculate AI detection score using the TextProcessor
+    const score = TextProcessor.estimateAIDetectionScore(content);
+    setDetectionScore(score);
+    
+    if (score < 20) {
+      toast({
+        title: "AI Detection Score: " + score + "%",
+        description: "Your content has a low probability of being flagged as AI-generated",
+      });
+    } else {
+      toast({
+        title: "AI Detection Score: " + score + "%",
+        description: "Your content may be detected as AI-generated. Consider regenerating with different settings.",
+        variant: "destructive",
+      });
+    }
   };
 
   const exportDocument = () => {
