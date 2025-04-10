@@ -44,17 +44,55 @@ export function ContentEditor({
     }
   }, [generatedContent]);
 
+  useEffect(() => {
+    // Initialize local storage settings if they don't exist
+    if (localStorage.getItem("tone") === null) {
+      localStorage.setItem("tone", "professional");
+    }
+    if (localStorage.getItem("length") === null) {
+      localStorage.setItem("length", "1000");
+    }
+    if (localStorage.getItem("creativity") === null) {
+      localStorage.setItem("creativity", "0.7");
+    }
+    if (localStorage.getItem("humanize") === null) {
+      localStorage.setItem("humanize", "0.8");
+    }
+    if (localStorage.getItem("includeHeadings") === null) {
+      localStorage.setItem("includeHeadings", "true");
+    }
+    if (localStorage.getItem("includeBullets") === null) {
+      localStorage.setItem("includeBullets", "true");
+    }
+    if (localStorage.getItem("includeFaq") === null) {
+      localStorage.setItem("includeFaq", "true");
+    }
+    if (localStorage.getItem("includeConclusion") === null) {
+      localStorage.setItem("includeConclusion", "true");
+    }
+    if (localStorage.getItem("includeCta") === null) {
+      localStorage.setItem("includeCta", "true");
+    }
+  }, []);
+
   const handleContentChange = () => {
     if (editorRef.current) {
       setGeneratedContent(editorRef.current.innerText);
     }
   };
 
-  // Sample extracted keywords from the document content
+  // Handle setting changes
+  const updateSetting = (key: string, value: string | boolean) => {
+    localStorage.setItem(key, String(value));
+  };
+
+  // Extract keywords from the document content for display
   const extractedKeywords = documentContent
     ? Array.from(
         new Set(
           documentContent
+            .toLowerCase()
+            .replace(/[^\w\s]/g, '')
             .split(/\s+/)
             .filter((word) => word.length > 5)
             .slice(0, 8)
@@ -118,9 +156,9 @@ export function ContentEditor({
                         <div className="flex items-center justify-center h-full">
                           <div className="text-center">
                             <Sparkles className="h-8 w-8 mx-auto mb-4 text-primary animate-pulse" />
-                            <h3 className="text-lg font-medium mb-2">Generating content...</h3>
+                            <h3 className="text-lg font-medium mb-2">Analyzing document...</h3>
                             <p className="text-muted-foreground max-w-md">
-                              Our AI is crafting high-quality, human-like content based on your document.
+                              Our AI is analyzing your document and crafting content based on its guidelines and content.
                               This typically takes 15-30 seconds.
                             </p>
                             
@@ -137,7 +175,7 @@ export function ContentEditor({
                     ) : (
                       <div
                         ref={editorRef}
-                        className="content-editor"
+                        className="content-editor p-6 whitespace-pre-wrap min-h-[300px]"
                         contentEditable
                         onInput={handleContentChange}
                         dangerouslySetInnerHTML={{
@@ -249,6 +287,8 @@ export function ContentEditor({
                       <select
                         id="tone"
                         className="w-full p-2 rounded-md border"
+                        defaultValue={localStorage.getItem("tone") || "professional"}
+                        onChange={(e) => updateSetting("tone", e.target.value)}
                       >
                         <option value="professional">Professional</option>
                         <option value="conversational">Conversational</option>
@@ -263,7 +303,8 @@ export function ContentEditor({
                       <select
                         id="length"
                         className="w-full p-2 rounded-md border"
-                        defaultValue="1000"
+                        defaultValue={localStorage.getItem("length") || "1000"}
+                        onChange={(e) => updateSetting("length", e.target.value)}
                       >
                         <option value="500">500 words</option>
                         <option value="750">750 words</option>
@@ -277,10 +318,11 @@ export function ContentEditor({
                       <Label htmlFor="creativity">Creativity</Label>
                       <Slider
                         id="creativity"
-                        defaultValue={[0.7]}
+                        defaultValue={[parseFloat(localStorage.getItem("creativity") || "0.7")]}
                         max={1}
                         step={0.1}
                         className="py-2"
+                        onValueChange={(value) => updateSetting("creativity", value[0])}
                       />
                       <div className="flex justify-between text-xs text-muted-foreground">
                         <span>Conservative</span>
@@ -292,10 +334,11 @@ export function ContentEditor({
                       <Label htmlFor="humanize">Humanization Level</Label>
                       <Slider
                         id="humanize"
-                        defaultValue={[0.8]}
+                        defaultValue={[parseFloat(localStorage.getItem("humanize") || "0.8")]}
                         max={1}
                         step={0.1}
                         className="py-2"
+                        onValueChange={(value) => updateSetting("humanize", value[0])}
                       />
                       <div className="flex justify-between text-xs text-muted-foreground">
                         <span>Standard</span>
@@ -323,29 +366,49 @@ export function ContentEditor({
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <Label htmlFor="switch-headings">Include headings</Label>
-                      <Switch id="switch-headings" defaultChecked />
+                      <Switch 
+                        id="switch-headings" 
+                        defaultChecked={localStorage.getItem("includeHeadings") !== "false"}
+                        onCheckedChange={(checked) => updateSetting("includeHeadings", checked)}
+                      />
                     </div>
 
                     <div className="flex items-center justify-between">
                       <Label htmlFor="switch-bullets">Include bullet points</Label>
-                      <Switch id="switch-bullets" defaultChecked />
+                      <Switch 
+                        id="switch-bullets" 
+                        defaultChecked={localStorage.getItem("includeBullets") !== "false"}
+                        onCheckedChange={(checked) => updateSetting("includeBullets", checked)}
+                      />
                     </div>
 
                     <div className="flex items-center justify-between">
                       <Label htmlFor="switch-faq">Include FAQ section</Label>
-                      <Switch id="switch-faq" defaultChecked />
+                      <Switch 
+                        id="switch-faq" 
+                        defaultChecked={localStorage.getItem("includeFaq") !== "false"}
+                        onCheckedChange={(checked) => updateSetting("includeFaq", checked)}
+                      />
                     </div>
 
                     <div className="flex items-center justify-between">
                       <Label htmlFor="switch-conclusion">
                         Include conclusion
                       </Label>
-                      <Switch id="switch-conclusion" defaultChecked />
+                      <Switch 
+                        id="switch-conclusion" 
+                        defaultChecked={localStorage.getItem("includeConclusion") !== "false"}
+                        onCheckedChange={(checked) => updateSetting("includeConclusion", checked)}
+                      />
                     </div>
 
                     <div className="flex items-center justify-between">
                       <Label htmlFor="switch-cta">Include call to action</Label>
-                      <Switch id="switch-cta" defaultChecked />
+                      <Switch 
+                        id="switch-cta" 
+                        defaultChecked={localStorage.getItem("includeCta") !== "false"}
+                        onCheckedChange={(checked) => updateSetting("includeCta", checked)}
+                      />
                     </div>
                   </div>
 
@@ -357,12 +420,18 @@ export function ContentEditor({
 
                     <div className="flex items-center justify-between">
                       <Label htmlFor="switch-keywords">Keyword optimization</Label>
-                      <Switch id="switch-keywords" defaultChecked />
+                      <Switch 
+                        id="switch-keywords" 
+                        defaultChecked
+                      />
                     </div>
 
                     <div className="flex items-center justify-between">
                       <Label htmlFor="switch-meta">Generate meta description</Label>
-                      <Switch id="switch-meta" defaultChecked />
+                      <Switch 
+                        id="switch-meta" 
+                        defaultChecked
+                      />
                     </div>
                   </div>
                 </div>

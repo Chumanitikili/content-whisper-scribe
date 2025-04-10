@@ -9,6 +9,7 @@ import {
   MenuIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { generateContentFromDocument, checkAIDetection } from "@/services/aiService";
 
 interface NavbarProps {
   toggleSidebar: () => void;
@@ -17,7 +18,7 @@ interface NavbarProps {
   content: string;
   documentName: string;
   documentContent: string;
-  setGeneratedContent: (content: string) => void; // Add this prop
+  setGeneratedContent: (content: string) => void;
 }
 
 export function Navbar({
@@ -27,7 +28,7 @@ export function Navbar({
   content,
   documentName,
   documentContent,
-  setGeneratedContent, // Add this prop
+  setGeneratedContent,
 }: NavbarProps) {
   const { toast } = useToast();
   const [detectionScore, setDetectionScore] = useState<number | null>(null);
@@ -39,7 +40,7 @@ export function Navbar({
     }
   }, [content]);
 
-  const generateContent = () => {
+  const generateContent = async () => {
     if (!documentContent || !documentContent.trim()) {
       toast({
         title: "No source document",
@@ -51,37 +52,52 @@ export function Navbar({
 
     setIsGenerating(true);
     
-    // In a real implementation, this would call the AI API
-    setTimeout(() => {
-      // Sample content for demonstration
-      const sampleContent = `# Generated Content Based on Your Document
-
-## Introduction
-This is AI-generated content based on the document you uploaded.
-
-## Main Points
-- The content is based on your reference material
-- It's formatted with proper headings and sections
-- You can edit this content directly in the editor
-
-## Conclusion
-You can now edit, refine, and export this content as needed.`;
+    try {
+      // Get settings from localStorage or use defaults
+      // In a real app, these would come from the UI state
+      const includeHeadings = localStorage.getItem("includeHeadings") !== "false";
+      const includeBullets = localStorage.getItem("includeBullets") !== "false";
+      const includeFaq = localStorage.getItem("includeFaq") !== "false";
+      const includeConclusion = localStorage.getItem("includeConclusion") !== "false";
+      const includeCta = localStorage.getItem("includeCta") !== "false";
+      const tone = localStorage.getItem("tone") || "professional";
+      const length = localStorage.getItem("length") || "1000";
+      const creativity = parseFloat(localStorage.getItem("creativity") || "0.7");
       
-      // Set the generated content
-      setGeneratedContent(sampleContent);
-      setIsGenerating(false);
+      const generatedContent = await generateContentFromDocument({
+        documentContent,
+        tone,
+        length,
+        creativity,
+        includeHeadings,
+        includeBullets,
+        includeFaq,
+        includeConclusion,
+        includeCta,
+      });
+      
+      setGeneratedContent(generatedContent);
       
       // Simulate a random AI detection score between 5-18%
-      setDetectionScore(Math.floor(Math.random() * 14) + 5);
+      const score = await checkAIDetection(generatedContent);
+      setDetectionScore(score);
       
       toast({
         title: "Content generated",
-        description: "Your content has been successfully created",
+        description: "Your content has been successfully created based on the reference material",
       });
-    }, 3000);
+    } catch (error) {
+      toast({
+        title: "Error generating content",
+        description: "There was a problem analyzing your document. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
-  const checkAIDetection = () => {
+  const checkAIDetectionScore = async () => {
     if (!content || content.length < 100) {
       toast({
         title: "Insufficient content",
@@ -97,9 +113,8 @@ You can now edit, refine, and export this content as needed.`;
       description: "Analyzing content against detection tools",
     });
 
-    setTimeout(() => {
-      // Simulate a random AI detection score between 5-18%
-      const score = Math.floor(Math.random() * 14) + 5;
+    try {
+      const score = await checkAIDetection(content);
       setDetectionScore(score);
       
       if (score < 20) {
@@ -114,7 +129,13 @@ You can now edit, refine, and export this content as needed.`;
           variant: "destructive",
         });
       }
-    }, 2000);
+    } catch (error) {
+      toast({
+        title: "Error checking AI detection",
+        description: "There was a problem analyzing your content. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const exportDocument = () => {
@@ -174,7 +195,7 @@ You can now edit, refine, and export this content as needed.`;
           variant="outline"
           size="sm"
           className="hidden sm:flex"
-          onClick={checkAIDetection}
+          onClick={checkAIDetectionScore}
         >
           <CircleSlash className="h-4 w-4 mr-2" />
           Check detection
