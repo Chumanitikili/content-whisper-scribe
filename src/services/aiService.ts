@@ -74,18 +74,18 @@ export const generateContentFromDocument = async (params: ContentGenerationParam
 
   generatedContent += `## Recommendations\nBased on the content analysis:\n\n`;
   generatedContent += `1. Focus on the key topics identified above\n`;
-  generatedContent += `2. Consider expanding on ${topics[0]} and ${topics[1]} in future content\n`;
-  generatedContent += `3. Address any gaps in information about ${topics[topics.length-1]}\n\n`;
+  generatedContent += `2. Consider expanding on ${topics[0] || "identified topics"} and ${topics[1] || "related concepts"} in future content\n`;
+  generatedContent += `3. Address any gaps in information about ${topics[topics.length-1] || "key areas"}\n\n`;
 
   if (includeFaq) {
     generatedContent += `## Frequently Asked Questions\n\n`;
-    generatedContent += `### Q: What is the main focus of this document?\nA: The document primarily focuses on ${topics[0]} and related topics.\n\n`;
-    generatedContent += `### Q: How can this content be improved?\nA: The content could be enhanced by expanding on ${topics[1]} and providing more concrete examples.\n\n`;
-    generatedContent += `### Q: What audience is this content targeted at?\nA: Based on the analysis, this content seems to be targeted at readers interested in ${topics.slice(0, 2).join(" and ")}.\n\n`;
+    generatedContent += `### Q: What is the main focus of this document?\nA: The document primarily focuses on ${topics[0] || "the provided subject"} and related topics.\n\n`;
+    generatedContent += `### Q: How can this content be improved?\nA: The content could be enhanced by expanding on ${topics[1] || "key concepts"} and providing more concrete examples.\n\n`;
+    generatedContent += `### Q: What audience is this content targeted at?\nA: Based on the analysis, this content seems to be targeted at readers interested in ${topics.slice(0, 2).join(" and ") || "the subject matter"}.\n\n`;
   }
 
   if (includeConclusion) {
-    generatedContent += `## Conclusion\nThe document provides valuable information on ${topics.join(", ")}. With some refinement focused on the recommendations above, it could be improved significantly.\n\n`;
+    generatedContent += `## Conclusion\nThe document provides valuable information on ${topics.join(", ") || "the subject"}. With some refinement focused on the recommendations above, it could be improved significantly.\n\n`;
   }
 
   if (includeCta) {

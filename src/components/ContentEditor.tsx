@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -39,8 +38,8 @@ export function ContentEditor({
   const editorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (editorRef.current) {
-      editorRef.current.focus();
+    if (editorRef.current && generatedContent) {
+      editorRef.current.innerHTML = generatedContent;
     }
   }, [generatedContent]);
 
@@ -207,9 +206,7 @@ export function ContentEditor({
                         className="content-editor p-6 whitespace-pre-wrap min-h-[300px]"
                         contentEditable
                         onInput={handleContentChange}
-                        dangerouslySetInnerHTML={{
-                          __html: generatedContent || `<p class="text-muted-foreground">Your AI-generated content will appear here. Click "Generate content" to begin.</p>`
-                        }}
+                        suppressContentEditableWarning={true}
                       />
                     )}
                   </ScrollArea>
