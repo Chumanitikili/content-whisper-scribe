@@ -239,68 +239,6 @@ export function ContentEditor({
                 </div>
               </CardContent>
             </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <div className="flex items-center">
-                      <AlignLeft className="h-5 w-5 mr-2 text-primary" />
-                      <h3 className="text-lg font-medium">Format Options</h3>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Control how your content is structured
-                    </p>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="switch-headings">Include headings</Label>
-                      <Switch id="switch-headings" defaultChecked />
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="switch-bullets">Include bullet points</Label>
-                      <Switch id="switch-bullets" defaultChecked />
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="switch-faq">Include FAQ section</Label>
-                      <Switch id="switch-faq" defaultChecked />
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="switch-conclusion">
-                        Include conclusion
-                      </Label>
-                      <Switch id="switch-conclusion" defaultChecked />
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="switch-cta">Include call to action</Label>
-                      <Switch id="switch-cta" defaultChecked />
-                    </div>
-                  </div>
-
-                  <div className="pt-4 border-t space-y-4">
-                    <div className="flex items-center">
-                      <Lightbulb className="h-5 w-5 mr-2 text-primary" />
-                      <h4 className="text-base font-medium">SEO Enhancement</h4>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="switch-keywords">Keyword optimization</Label>
-                      <Switch id="switch-keywords" defaultChecked />
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="switch-meta">Generate meta description</Label>
-                      <Switch id="switch-meta" defaultChecked />
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </TabsContent>
       </Tabs>

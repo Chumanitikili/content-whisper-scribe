@@ -32,7 +32,7 @@ export default function Index() {
           content={generatedContent}
           documentName={documentName}
           documentContent={documentContent}
-          setGeneratedContent={setGeneratedContent} // Pass the setter function
+          setGeneratedContent={setGeneratedContent}
         />
 
         <main className="flex-1 overflow-hidden p-0">
