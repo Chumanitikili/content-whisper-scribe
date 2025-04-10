@@ -54,7 +54,6 @@ export function Navbar({
     
     try {
       // Get settings from localStorage or use defaults
-      // In a real app, these would come from the UI state
       const includeHeadings = localStorage.getItem("includeHeadings") !== "false";
       const includeBullets = localStorage.getItem("includeBullets") !== "false";
       const includeFaq = localStorage.getItem("includeFaq") !== "false";
@@ -76,6 +75,7 @@ export function Navbar({
         includeCta,
       });
       
+      // Set the generated content in markdown format
       setGeneratedContent(generatedContent);
       
       // Simulate a random AI detection score between 5-18%
@@ -87,6 +87,7 @@ export function Navbar({
         description: "Your content has been successfully created based on the reference material",
       });
     } catch (error) {
+      console.error("Error generating content:", error);
       toast({
         title: "Error generating content",
         description: "There was a problem analyzing your document. Please try again.",

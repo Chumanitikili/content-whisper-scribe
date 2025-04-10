@@ -86,6 +86,35 @@ export function ContentEditor({
     localStorage.setItem(key, String(value));
   };
 
+  // Convert markdown to HTML for preview
+  const convertMarkdownToHtml = (markdown: string): string => {
+    if (!markdown) return '';
+    
+    let html = markdown
+      // Convert headings
+      .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+      .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+      .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+      // Convert bold, italic
+      .replace(/\*\*(.*)\*\*/gm, '<strong>$1</strong>')
+      .replace(/\*(.*)\*/gm, '<em>$1</em>')
+      // Convert lists
+      .replace(/^\- (.*$)/gm, '<li>$1</li>')
+      .replace(/<\/li>\n<li>/gm, '</li><li>')
+      .replace(/<li>(.*?)<\/li>/gm, '<ul><li>$1</li></ul>')
+      .replace(/<\/ul>\n<ul>/gm, '')
+      // Convert numbered lists
+      .replace(/^\d+\. (.*$)/gm, '<li>$1</li>')
+      .replace(/<\/li>\n<li>/gm, '</li><li>')
+      .replace(/<li>(.*?)<\/li>/gm, '<ol><li>$1</li></ol>')
+      .replace(/<\/ol>\n<ol>/gm, '')
+      // Convert paragraphs
+      .replace(/^(?!<[hou])(.*$)/gm, '<p>$1</p>')
+      .replace(/<\/p>\n<p>/gm, '</p><p>');
+
+    return html;
+  };
+
   // Extract keywords from the document content for display
   const extractedKeywords = documentContent
     ? Array.from(
@@ -206,7 +235,7 @@ export function ContentEditor({
                   <ScrollArea className="h-full">
                     <div className="p-6 prose prose-sm md:prose-base lg:prose-lg max-w-none">
                       {generatedContent ? (
-                        <div dangerouslySetInnerHTML={{ __html: generatedContent.replace(/\n/g, '<br>') }} />
+                        <div dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(generatedContent) }} />
                       ) : (
                         <div className="flex items-center justify-center h-full min-h-[200px]">
                           <div className="text-center">
